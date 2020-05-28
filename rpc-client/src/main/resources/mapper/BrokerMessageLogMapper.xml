@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="rabbitmq.rpcclient.mapper.BrokerMessageLogMapper">
+
+    <!--void insert(BrokerMessageLog brokerMessageLog);-->
+    <insert id="insert">
+        insert into broker_message_log(message_id,message,try_count,status,next_retry,create_time,update_time)
+        value(#{message_id},#{message},#{try_count},#{status},#{next_retry},#{create_time},#{update_time})
+    </insert>
+
+    <!--void changeBrokerMessageLogStatus(String messageId, int status, Date update_time);-->
+    <update id="changeBrokerMessageLogStatus">
+        update broker_message_log
+        set status = #{status},update_time = #{update_time}
+        where message_id = #{messageId}
+    </update>
+
+    <!--List<BrokerMessageLog> findResendMessage();-->
+    <select id="findResendMessage" resultType="domain.BrokerMessageLog">
+        select * from broker_message_log
+        where status = 0 and next_retry>sysdate()
+    </select>
+
+
+    <!--void update4Resend(String message_id, Date update_time);-->
+    <update id="update4Resend">
+        update broker_message_log
+        set update_time = #{update_time}, try_count = try_count+1
+        where message_id = #{message_id}
+    </update>
+</mapper>

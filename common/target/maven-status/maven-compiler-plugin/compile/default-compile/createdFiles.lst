@@ -1,0 +1,4 @@
+domain\Order.class
+domain\Commodity.class
+domain\BrokerMessageLog.class
+domain\MessageStatus.class
